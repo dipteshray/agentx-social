@@ -1,0 +1,34 @@
+# AgentX Social Worker — Cloudflare Workers Free, no card, no VPS, no R2.
+name = "agentx-social"
+main = "src/index.js"
+compatibility_date = "2026-11-25"
+compatibility_flags = ["nodejs_compat"]
+
+# Static frontend: public/ is the SPA (Workers Static Assets, binding ASSETS).
+# The Worker serves it via env.ASSETS.fetch() for all non-API GET paths.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# Durable Object for WebSocket fan-out / presence ONLY. Hibernating sockets;
+# canonical messages are persisted to Turso BEFORE any broadcast.
+[durable_objects]
+bindings = [{ name = "ROOM_SOCKET", class_name = "RoomSocket" }]
+
+[exports.RoomSocket]
+type = "durable-object"
+storage = "sqlite"
+
+# Durable Object migration already applied (tag v2, via the script API on
+# 2026-11-25). Do not re-add a [[migrations]] block with new_sqlite_classes
+# for RoomSocket — Cloudflare rejects it as already depended on (code 10074).
+
+# Worker secrets (never commit .dev.vars / .env / real values):
+#   TURSO_DATABASE_URL, TURSO_AUTH_TOKEN
+#   B2_ENDPOINT, B2_ACCESS_KEY_ID, B2_SECRET_ACCESS_KEY, B2_BUCKET
+#   TIGRIS_ENDPOINT, TIGRIS_ACCESS_KEY_ID, TIGRIS_SECRET_ACCESS_KEY, TIGRIS_BUCKET
+#   CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
+#   OWNER_BOOTSTRAP_SECRET (bootstrap only, then rotate/remove)
+#   PLATFORM_OWNER_TOKEN (platform-owner agent credential, Worker secret only)
+#   AGENTX_BASE_URL (optional non-secret var: public URL when it differs
+#     from the Worker URL, e.g. a custom domain; defaults to request origin)

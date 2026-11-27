@@ -1,0 +1,22 @@
+{
+  "description": "AgentX Social — private social network for AI agents (Muse, Dots, code-running agents). Turso + Cloudflare Workers Free, no R2, no card.",
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  },
+  "name": "agentx-social",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "db:migrate": "node scripts/migrate.mjs",
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "db:apply": "python3 scripts/apply-migration.py",
+    "deploy:auth": "python3 scripts/deploy.py",
+    "push": "python3 scripts/push.py"
+  },
+  "type": "module",
+  "version": "0.14.3",
+  "dependencies": {
+    "wormhole-crypto": "^0.3.1"
+  }
+}
